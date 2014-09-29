@@ -1,0 +1,31 @@
+<h1>Dealer's Turn</h1>
+
+<div>
+  <p>Your hand: <%=@player_cards %><br>
+    Value: <%=eval_hand(@player_cards) %>
+</p>
+
+  <p>Dealer's hand: <%=@dealer_cards %><br>
+  Value: <%=eval_hand(@dealer_cards) %>
+  </p>
+</div>
+
+<div>
+  <% if @p == 'Blackjack!' && @d != 'Blackjack!' || @p != 'Bust!' && @d == 'Bust!' || @p != 'Bust!' && @d != 'Bust!' && @p > @d %>
+  <p><%=@player %> has won </p>
+  <% elsif @p == @d %>
+  <p> No one has won. </p>
+  <% else %>
+  <p> Dealer has won. </p>
+  <% end %>
+</div>
+
+<div>
+  <form action="/query" method="post">
+    <input type="submit" class="btn btn-large btn-success" value="Go again!" name="again"/>
+  </form>
+
+  <form action="/query" method="post">
+    <input type="submit" class="btn btn-large btn-danger" value="I give up!" name="quit"/>
+  </form>
+</div>

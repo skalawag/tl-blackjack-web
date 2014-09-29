@@ -1,0 +1,17 @@
+<h1>Play page</h1>
+
+<div>
+  <p>Your cards are: <%=@cards %><br>
+  Value: <%=eval_hand(@cards) %>
+  </p>
+</div>
+
+<div>
+  <form action="/hit" method="post">
+    <input type="submit" class="btn btn-large btn-success" value="Hit Me!"/>
+  </form>
+
+  <form action="/stay" method="post">
+    <input type="submit" class="btn btn-large btn-danger" value="Stay!"/>
+  </form>
+</div>
