@@ -106,11 +106,13 @@ end
 
 get '/dealer_play' do
   session['dealer_result'] = eval_hand(session['dealer_cards'])
-  while eval_hand(session['dealer_cards']) < 17 &&
-      session['dealer_result'] != 'Blackjack!' &&
-      session['dealer_result'] != 'Bust!'
-    session['dealer_cards'] << session['deck'].pop
-    session['dealer_result'] = eval_hand(session['dealer_cards'])
+  if session['player_result'] != 'Bust!'
+    while eval_hand(session['dealer_cards']) < 17 &&
+        session['dealer_result'] != 'Blackjack!' &&
+        session['dealer_result'] != 'Bust!'
+      session['dealer_cards'] << session['deck'].pop
+      session['dealer_result'] = eval_hand(session['dealer_cards'])
+    end
   end
   @player = session['username']
   @player_cards = session['player_cards']
