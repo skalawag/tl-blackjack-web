@@ -18,29 +18,27 @@ helpers do
       return 'Blackjack!'
     end
     # otherwise, total card values
-    total = [0]
+    total = 0
     ranks = cards.map {|c| c[0]}
     ranks.each do |c|
       if c == 'A'
-        total[0] += 11
+        total += 11
       elsif c.to_i == 0
-        total[0] += 10
+        total += 10
       else
-        total[0] += c.to_i
+        total += c.to_i
       end
     end
     # take account of aces
-    ranks.count('A').times do
-      total = total + total.map { |s| s - 10 }
+    num_of_aces = ranks.count('A')
+    while num_of_aces > 0 && total > 22
+      total -= 10
+      num_of_aces -= 1
     end
-    total = total.select { |n| n < 22 }.reverse.uniq
-    # check if player went bust
-    if total.empty?
-      "Bust!"
-    elsif total.length > 1
-      total.map { |v| v.to_s }.join('/')
+    if total > 21
+      'Bust!'
     else
-      total.max
+      total
     end
   end
 end
@@ -75,6 +73,8 @@ get '/blackjack' do
   session['player_cards'] << session['deck'].pop
   session['dealer_cards'] << session['deck'].pop
   session['dealer_cards'] << session['deck'].pop
+  session['player_result'] = eval_hand(session['player_cards'])
+  session['dealer_result'] = eval_hand(session['dealer_cards'])
   erb :blackjack
 end
 
@@ -104,16 +104,21 @@ post '/stay' do
   redirect :dealer_play
 end
 
+# FIXME: return only numbers from eval_hand. you can adjust them for
+# display later. that will avoid all these erroneous comparisons.
 get '/dealer_play' do
-  session['dealer_result'] = eval_hand(session['dealer_cards'])
-  if session['player_result'] != 'Bust!'
-    while eval_hand(session['dealer_cards']) < 17 &&
+  if session['player_result'] != 'Bust!' &&
+      session['player_result'] != 'Blackjack!'
+    while session['dealer_result'] != 'Bust!' &&
         session['dealer_result'] != 'Blackjack!' &&
-        session['dealer_result'] != 'Bust!'
+        eval_hand(session['dealer_cards']) < 17
       session['dealer_cards'] << session['deck'].pop
       session['dealer_result'] = eval_hand(session['dealer_cards'])
+      p session['dealer_cards']
+      p session['dealer_result']
     end
   end
+  binding.pry
   @player = session['username']
   @player_cards = session['player_cards']
   @p = session['player_result']
