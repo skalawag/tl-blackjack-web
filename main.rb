@@ -37,12 +37,7 @@ helpers do
       total -= 10
       num_of_aces -= 1
     end
-    # Fixme: unnecessary complication
-    if total > 21
-      -1
-    else
-      total
-    end
+    total
   end
 
   def interpret_result(result)
