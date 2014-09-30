@@ -117,7 +117,6 @@ end
 
 post '/bet' do
   @show_none = true
-  puts params
   session['bet'] = params['bet'].to_i
   session['player_chips'] -= params['bet'].to_i
   redirect '/game'
