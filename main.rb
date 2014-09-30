@@ -76,8 +76,8 @@ end
 
 # hands begin here
 get '/blackjack' do
-  session['player_result'] = ""
-  session['dealer_result'] = ""
+  session['player_result'] = 0
+  session['dealer_result'] = 0
   session['deck'] =
     "AJQKT98765432".chars.product("csdh".chars).map { |c| c.join }.shuffle
   session[:player_cards] = []
