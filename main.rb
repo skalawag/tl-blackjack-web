@@ -9,6 +9,10 @@ use Rack::Session::Cookie, :key => 'rack.session',
                            :secret => 'zhW^$#LEYrmvgabos(H_c{8Fk*V3?K9}27C0=,nD'
 
 helpers do
+  def get_img_url(card)
+    "<img src='/images/cards/#{card}.jpg' class='card_image' width=100px/>"
+  end
+
   def blackjack?(cards)
     cards.length == 2 &&
       cards.sort.first[0] == 'A' &&
@@ -93,6 +97,7 @@ end
 
 get '/deal' do
   @cards = session['player_cards']
+  @dealer_cards = session['dealer_cards'].first
   if blackjack?(@cards)
     redirect :dealer_play
   else

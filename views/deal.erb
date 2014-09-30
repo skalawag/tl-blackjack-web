@@ -1,9 +1,20 @@
 <h1>Play page</h1>
 
 <div>
-  <p>Your cards are: <%=@cards %><br>
-  Value: <%=interpret_result(eval_hand(@cards)) %>
-  </p>
+  <h2>Player Cards</h2>
+
+  <% session['player_cards'].each do |card| %>
+    <%=get_img_url(card) %>
+  <% end %>
+  <h2>Value: <%=interpret_result(eval_hand(@cards)) %></h2>
+</div>
+
+<div>
+  <h2>Dealer Cards</h2>
+
+  <%=get_img_url(@dealer_cards) %>
+
+  <h2>Value: <%=interpret_result(eval_hand([@dealer_cards])) %></h2>
 </div>
 
 <div>

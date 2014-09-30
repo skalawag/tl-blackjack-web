@@ -3,9 +3,20 @@
 <%=@dealer_cards%>
 
 <div>
-  <p>Your hand: <%=@player_cards %><br>
-    Value: <%=interpret_result(eval_hand(@player_cards)) %>
+  <h2>Player Cards</h2>
+
+  <% @player_cards.each do |card| %>
+    <%=get_img_url(card) %>
+  <% end %>
+  <h2>Value: <%=interpret_result(eval_hand(@player_cards)) %></h2>
 </p>
+
+  <h2>Dealer Cards</h2>
+
+  <% @dealer_cards.each do |card| %>
+    <%=get_img_url(card) %>
+  <% end %>
+  <h2>Value: <%=interpret_result(eval_hand(@dealer_cards)) %></h2>
 
   <p>Dealer's hand: <%=@dealer_cards %><br>
   Value: <%=interpret_result(eval_hand(@dealer_cards)) %>
