@@ -1,0 +1,25 @@
+form#hit {
+    float: left;
+}
+
+form#stay {
+    float: left;
+    margin-left: 10px;
+}
+
+img {
+    margin-right: 10px;
+    margin-top: 20px;
+}
+
+.alert {
+    font-size: 20px
+}
+
+h2 {
+    align: center
+}
+
+.sayoonara {
+    align: center;
+}

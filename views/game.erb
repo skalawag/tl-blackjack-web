@@ -1,0 +1,60 @@
+<h2> Blackjack! </h2>
+
+<div class="well">
+<% if @show_none %>
+  <h4>Dealer's Cards</h4>
+<% elsif @dealer_show_one %>
+  <h4>Dealer's Cards, showing <%= eval_hand([session['dealer_cards'][0]]) %></h4>
+    <%= get_img_url(session['dealer_cards'][0]) %>
+    <%= get_img_url('cover') %>
+<% else %>
+  <h4>Dealer's Cards, showing <%= eval_hand(session['dealer_cards']) %></h4>
+  <% session['dealer_cards'].each do |card| %>
+    <%= get_img_url(card) %>
+  <% end %>
+<% end %>
+</div>
+
+<div class="well">
+<% if @show_none %>
+<h4>Player's Cards</h4>
+<% else %>
+  <h4>Player's Cards, showing <%= eval_hand(session['player_cards'])%>. Wager: <%= session['bet'] %></h4>
+
+  <% session['player_cards'].each do |card| %>
+    <%= get_img_url(card) %>
+  <% end %>
+<% end %>
+</div>
+
+<% if @show_none %>
+<p>
+  <form id="bet" action="/bet" method="post">
+    <input class="span1" type="text" value="25" name="bet"><span class="help-block">Place a wager!</span>
+    <input type="submit" class="btn btn-success" value="Go!"/>
+  </form>
+
+<h4>You have <%= session['player_chips'] %> chips remaining.</h4>
+</p>
+
+  <% if session['player_chips'] < 1 %>
+     <form id="hit" action="/replenish" method="post">
+       <input type="submit" class="btn btn-large btn-success" value="Get 500 More Chips"/>
+     </form>
+   <% end %>
+
+<% elsif @show_player_buttons %>
+<form id="hit" action="/hit" method="post">
+  <input type="submit" class="btn btn-large btn-success" value="Hit Me!"/>
+</form>
+
+<form id="stay" action="/stay" method="post">
+  <input type="submit" class="btn btn-large btn-danger" value="Stay!"/>
+</form>
+<% end %>
+
+<% if @show_dealer_button %>
+<form id="dealer_hit" action="/dealer_hit" method="post">
+  <input type="submit" class="btn btn-block btn-primary" value="Show next dealer card."/>
+</form>
+<% end %>
