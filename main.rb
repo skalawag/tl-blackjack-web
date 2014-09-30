@@ -9,6 +9,18 @@ use Rack::Session::Cookie, :key => 'rack.session',
                            :secret => 'zhW^$#LEYrmvgabos(H_c{8Fk*V3?K9}27C0=,nD'
 
 helpers do
+  def run_dealer
+    d_val = eval_hand(session['dealer_cards'])
+    p_val = eval_hand(session['player_cards'])
+    if p_val > 22
+      redirect '/announce'
+    elsif d_val >= p_val
+      redirect '/announce'
+    else
+      erb :game
+    end
+  end
+
   def get_img_url(card)
     "<img src='/images/cards/#{card}.jpg' class='card_image' width=100px/>"
   end
@@ -20,9 +32,6 @@ helpers do
   end
 
   def eval_hand(cards)
-    if blackjack?(cards)
-      return -1
-    end
     # otherwise, total card values
     total = 0
     ranks = cards.map {|c| c[0]}
@@ -37,111 +46,149 @@ helpers do
     end
     # take account of aces
     num_of_aces = ranks.count('A')
-    while num_of_aces > 0 && total > 22
+    while num_of_aces > 0 && total > 21
       total -= 10
       num_of_aces -= 1
     end
     total
   end
 
-  def interpret_result(result)
-    if result > 21
-      'Bust!'
-    elsif result == -1
-      'Blackjack!'
+  def winner?
+    p_score = eval_hand(session['player_cards'])
+    d_score = eval_hand(session['dealer_cards'])
+    p_bj = blackjack?(session['player_cards'])
+    b_bj = blackjack?(session['dealer_cards'])
+    if p_bj && d_score < 22 && (not b_bj) ||
+      p_score < 22 && d_score > 21 ||
+        p_score > d_score && p_score < 22
+      session['player_name']
+    elsif p_score == d_score
+      "Tie"
     else
-      result
+      "Dealer"
+    end
+  end
+
+  def player_live?
+    if eval_hand(session['player_hand']) < 22
+      true
+    end
+  end
+
+  def blackjack_beats_dealer?
+    cards = session['dealer_cards'].map{|c| c[0]}
+    if cards.include?('A') && cards.include?('K') ||
+        cards.include?('A') && cards.include?('Q') ||
+        cards.include?('A') && cards.include?('J') ||
+        cards.include?('A') && cards.include?('T')
+      false
     end
   end
 end
 
 get '/' do
-#  redirect :signup
-  if not session[:username]
-    redirect :signup
+  if session['player_name']
+    redirect '/game'
   else
-    erb :blackjack
+    erb :signup
   end
-end
-
-get '/signup' do
-  erb :signup
 end
 
 post '/signup' do
-  session[:username] = params[:username]
-  redirect :blackjack
+  session['player_name'] = params['username']
+  session['player_chips'] = 500
+  redirect '/bet'
 end
 
-# hands begin here
-get '/blackjack' do
-  session['player_result'] = 0
-  session['dealer_result'] = 0
+before do
+  @show_player_buttons = false
+  @dealer_show_one = true
+end
+
+post '/replenish' do
+  session['player_chips'] = 500
+  redirect '/bet'
+end
+
+get '/bet' do
+  @show_none = true
+  erb :game
+end
+
+post '/bet' do
+  @show_none = true
+  session['bet'] = params['bet'].to_i
+  session['player_chips'] -= params['bet'].to_i
+  redirect '/game'
+end
+
+get '/game' do
+  @show_player_buttons = true
+  session['player_cards'] = []
+  session['dealer_cards'] = []
   session['deck'] =
     "AJQKT98765432".chars.product("csdh".chars).map { |c| c.join }.shuffle
-  session[:player_cards] = []
-  session[:dealer_cards] = []
-  session['player_cards'] << session['deck'].pop
-  session['player_cards'] << session['deck'].pop
-  session['dealer_cards'] << session['deck'].pop
-  session['dealer_cards'] << session['deck'].pop
-  session['player_result'] = eval_hand(session['player_cards'])
-  session['dealer_result'] = eval_hand(session['dealer_cards'])
-  erb :blackjack
-end
 
-post '/take_bet' do
-  session['player_bet'] = params['player_bet']
-  redirect :deal
-end
-
-get '/deal' do
-  @cards = session['player_cards']
-  @dealer_cards = session['dealer_cards'].first
-  if blackjack?(@cards)
-    redirect :dealer_play
-  else
-    erb :deal
+  2.times do
+    session['player_cards'] << session['deck'].pop
+    session['dealer_cards'] << session['deck'].pop
   end
+
+  if blackjack?(session['player_cards'])
+    @show_player_buttons = false
+    if blackjack_beats_dealer?
+      @success = "Player has Blackjack! The dealer may still tie."
+    else
+      @success = "Player has Blackjack and has won the hand!"
+    end
+  end
+  erb :game
 end
 
 post '/hit' do
+  @show_player_buttons = true
   session['player_cards'] << session['deck'].pop
-  session['player_result'] = eval_hand(session['player_cards'])
-  if session['player_result'] > 21 ||
-      session['player_result'] == -1
-    redirect :dealer_play
-  else
-    redirect :deal
+  if eval_hand(session['player_cards']) > 21
+    @show_player_buttons = false
+    @dealer_show_one = false
+    @error = "#{session['player_name']} is busted! You have #{session['player_chips']} remaining."
   end
+  erb :game
 end
 
 post '/stay' do
-  session['player_result'] = eval_hand(session['player_cards'])
-  redirect :dealer_play
+  @show_dealer_button = true
+  @dealer_show_one = false
+  run_dealer
 end
 
-get '/dealer_play' do
-  if session['player_result'] < 22
-    while eval_hand(session['dealer_cards']) < 17
-      session['dealer_cards'] << session['deck'].pop
-      session['dealer_result'] = eval_hand(session['dealer_cards'])
-    end
-  end
-  @player = session['username']
-  @player_cards = session['player_cards']
-  @p = session['player_result']
-  @dealer_cards = session['dealer_cards']
-  @d = session['dealer_result']
-  erb :dealer_play
+post '/dealer_hit' do
+  @dealer_show_one = false
+  @show_dealer_button = true
+  session['dealer_cards'] << session['deck'].pop
+  run_dealer
 end
 
-post '/query' do
-  # announce result and then...
-  if params['quit']
-    redirect :sayoonara
+get '/announce' do
+  @dealer_show_one = false
+  winner = winner?
+  if winner == 'Tie'
+    session['player_chips'] += session['bet']
+    session['bet'] = 0
+    @announce = "The hand is a tie."
   else
-    redirect :blackjack
+    if winner == session['player_name']
+      session['player_chips'] += session['bet'] * 2
+      session['bet'] = 0
+    else
+      session['bet'] = 0
+    end
+    @announce = "The winner is #{winner}! You have #{session['player_chips']} chips remaining."
+  end
+  if session['player_chips'] < 1
+    redirect '/sayoonara'
+  else
+  erb :game
   end
 end
 
