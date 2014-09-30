@@ -10,12 +10,14 @@ use Rack::Session::Cookie, :key => 'rack.session',
 
 helpers do
   def blackjack?(cards)
-    cards.length == 2 && cards.sort.first[0] == 'A'
+    cards.length == 2 &&
+      cards.sort.first[0] == 'A' &&
+      cards.sort.last[0] =~ /K|Q|J|T/
   end
 
   def eval_hand(cards)
     if blackjack?(cards)
-      return 'Blackjack!'
+      return 100
     end
     # otherwise, total card values
     total = 0
@@ -36,9 +38,19 @@ helpers do
       num_of_aces -= 1
     end
     if total > 21
-      'Bust!'
+      -1
     else
       total
+    end
+  end
+
+  def interpret_result(result)
+    if result == -1
+      'Bust!'
+    elsif result == 100
+      'Blackjack!'
+    else
+      result
     end
   end
 end
@@ -85,14 +97,18 @@ end
 
 get '/deal' do
   @cards = session['player_cards']
-  erb :deal
+  if blackjack?(@cards)
+    redirect :dealer_play
+  else
+    erb :deal
+  end
 end
 
 post '/hit' do
   session['player_cards'] << session['deck'].pop
   session['player_result'] = eval_hand(session['player_cards'])
-  if session['player_result'] == 'Bust!' ||
-      session['player_result'] == 'Blackjack!'
+  if session['player_result'] == -1 ||
+      session['player_result'] == 100
     redirect :dealer_play
   else
     redirect :deal
@@ -104,21 +120,16 @@ post '/stay' do
   redirect :dealer_play
 end
 
-# FIXME: return only numbers from eval_hand. you can adjust them for
-# display later. that will avoid all these erroneous comparisons.
 get '/dealer_play' do
-  if session['player_result'] != 'Bust!' &&
-      session['player_result'] != 'Blackjack!'
-    while session['dealer_result'] != 'Bust!' &&
-        session['dealer_result'] != 'Blackjack!' &&
+  if session['player_result'] > 0 && session['player_result'] < 22 ||
+      session['player_result'] == 100
+    while session['dealer_result'] != -1 &&
+        session['dealer_result'] != 100 &&
         eval_hand(session['dealer_cards']) < 17
       session['dealer_cards'] << session['deck'].pop
       session['dealer_result'] = eval_hand(session['dealer_cards'])
-      p session['dealer_cards']
-      p session['dealer_result']
     end
   end
-  binding.pry
   @player = session['username']
   @player_cards = session['player_cards']
   @p = session['player_result']

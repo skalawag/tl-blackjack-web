@@ -1,17 +1,19 @@
 <h1>Dealer's Turn</h1>
 
+<%=@dealer_cards%>
+
 <div>
   <p>Your hand: <%=@player_cards %><br>
-    Value: <%=eval_hand(@player_cards) %>
+    Value: <%=interpret_result(eval_hand(@player_cards)) %>
 </p>
 
   <p>Dealer's hand: <%=@dealer_cards %><br>
-  Value: <%=eval_hand(@dealer_cards) %>
+  Value: <%=interpret_result(eval_hand(@dealer_cards)) %>
   </p>
 </div>
 
 <div>
-  <% if @p == 'Blackjack!' && @d != 'Blackjack!' || @p != 'Bust!' && @d == 'Bust!' || @p != 'Bust!' && @d != 'Bust!' && @p > @d %>
+  <% if @p == 100 && @d != 100 || @p != -1 && @d == -1 || @p != -1 && @d != -1 && @p > @d %>
   <p><%=@player %> has won </p>
   <% elsif @p == @d %>
   <p> No one has won. </p>

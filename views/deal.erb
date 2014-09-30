@@ -2,7 +2,7 @@
 
 <div>
   <p>Your cards are: <%=@cards %><br>
-  Value: <%=eval_hand(@cards) %>
+  Value: <%=interpret_result(eval_hand(@cards)) %>
   </p>
 </div>
 
