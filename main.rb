@@ -17,7 +17,7 @@ helpers do
 
   def eval_hand(cards)
     if blackjack?(cards)
-      return 100
+      return -1
     end
     # otherwise, total card values
     total = 0
@@ -41,9 +41,9 @@ helpers do
   end
 
   def interpret_result(result)
-    if result == -1
+    if result > 21
       'Bust!'
-    elsif result == 100
+    elsif result == -1
       'Blackjack!'
     else
       result
@@ -103,8 +103,8 @@ end
 post '/hit' do
   session['player_cards'] << session['deck'].pop
   session['player_result'] = eval_hand(session['player_cards'])
-  if session['player_result'] == -1 ||
-      session['player_result'] == 100
+  if session['player_result'] > 21 ||
+      session['player_result'] == -1
     redirect :dealer_play
   else
     redirect :deal
@@ -117,11 +117,8 @@ post '/stay' do
 end
 
 get '/dealer_play' do
-  if session['player_result'] > 0 && session['player_result'] < 22 ||
-      session['player_result'] == 100
-    while session['dealer_result'] != -1 &&
-        session['dealer_result'] != 100 &&
-        eval_hand(session['dealer_cards']) < 17
+  if session['player_result'] < 22
+    while eval_hand(session['dealer_cards']) < 17
       session['dealer_cards'] << session['deck'].pop
       session['dealer_result'] = eval_hand(session['dealer_cards'])
     end
