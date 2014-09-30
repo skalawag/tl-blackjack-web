@@ -37,6 +37,7 @@ helpers do
       total -= 10
       num_of_aces -= 1
     end
+    # Fixme: unnecessary complication
     if total > 21
       -1
     else
