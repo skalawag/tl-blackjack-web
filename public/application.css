@@ -13,13 +13,13 @@ img {
 }
 
 .alert {
-    font-size: 20px
+    font-size: 20px;
 }
 
 h2 {
-    align: center
+    text-align: center;
 }
 
 .sayoonara {
-    align: center;
+    text-align: center;
 }
