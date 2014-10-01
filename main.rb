@@ -118,6 +118,9 @@ end
 post '/bet' do
   @show_none = true
   session['bet'] = params['bet'].to_i
+  if session['bet'] > session['player_chips'] || session['bet'] < 1
+    redirect '/bet'
+  end
   session['player_chips'] -= params['bet'].to_i
   redirect '/game'
 end
