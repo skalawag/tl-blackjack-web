@@ -137,6 +137,7 @@ get '/game' do
       session['deck'] << rank + suit
     end
   end
+  session['deck'] = session['deck'].shuffle
 
   2.times do
     session['player_cards'] << session['deck'].pop
