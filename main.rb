@@ -143,6 +143,7 @@ get '/game' do
       @success = "Player has Blackjack! The dealer may still tie."
     else
       @success = "Player has Blackjack and has won the hand!"
+      @play_again_button = true
     end
   end
   erb :game
@@ -152,6 +153,7 @@ post '/hit' do
   @show_player_buttons = true
   session['player_cards'] << session['deck'].pop
   if eval_hand(session['player_cards']) > 21
+    @play_again_button = true
     @show_player_buttons = false
     @dealer_show_one = false
     @error = "#{session['player_name']} is busted! You have #{session['player_chips']} remaining."
@@ -173,6 +175,7 @@ post '/dealer_hit' do
 end
 
 get '/announce' do
+  @play_again_button = true
   @dealer_show_one = false
   winner = winner?
   if winner == 'Tie'

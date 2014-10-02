@@ -7,28 +7,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="/application.js"></script>
   </head>
-  <body style="padding-top: 50px;">
-
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-            <ul class="nav">
-              <li><a href="/bet">New Game</a></li>
-            </ul>
-        </div>
-      </div>
-    </div>
+  <body id="body" style="padding-top: 20px;">
 
   <div class="container">
-    <%if @error %>
-      <div class="alert alert-error"><%=@error%></div>
-    <% end %>
-    <%if @success %>
-      <div class="alert alert-success"><%=@success%></div>
-    <% end %>
-    <%if @announce %>
-      <div class="alert alert-success"><%=@announce%></div>
-    <% end %>
       <%= yield %>
   </div>
   </body>

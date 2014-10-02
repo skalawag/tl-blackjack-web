@@ -1,4 +1,16 @@
-form#hit {
+#body {
+    background: #e5efc9;
+}
+
+form#hit_me {
+    float: left;
+}
+
+form#dealer_hit {
+    float: left;
+}
+
+form#play_again {
     float: left;
 }
 
@@ -24,7 +36,23 @@ h2 {
     text-align: center;
 }
 
-.well {
-    height: 249px;
+
+#bet {
+    position: absolute;
+    right-margin: -300px;
+}
+
+#conrols {
+    height: 20px;
     width: 940px;
+}
+
+#hit {
+    position: absolute;
+}
+
+#chips {
+    float: right;
+    font-size: 30px;
+
 }
