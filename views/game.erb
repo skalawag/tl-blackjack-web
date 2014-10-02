@@ -27,9 +27,12 @@
        <% end %>
 
        <% if @show_dealer_button %>
-       <form id="dealer_hit" action="/dealer_hit" method="post">
+       <div class="run_dealer">
+	 <p>Dealer's Turn!</p>
+       </div>
+<!--       <form id="dealer_hit" action="/dealer_hit" method="post">
 	 <input type="submit" class="button btn-success" value="Dealer says, 'Hit me!'."/>
-       </form>
+       </form> -->
        <% end %>
 
        <% if @play_again_button %>

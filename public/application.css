@@ -7,7 +7,8 @@ form#hit_me {
 }
 
 form#dealer_hit {
-    float: left;
+    position: absolute;
+    right-margin: -300px;
 }
 
 form#play_again {
@@ -17,6 +18,12 @@ form#play_again {
 form#stay {
     float: left;
     margin-left: 10px;
+}
+
+.run_dealer {
+    position: absolute;
+    right-margin: -500px;
+    font-size: 30px;
 }
 
 img {
