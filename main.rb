@@ -131,8 +131,12 @@ get '/game' do
   @show_player_buttons = true
   session['player_cards'] = []
   session['dealer_cards'] = []
-  session['deck'] =
-    "AJQKT98765432".chars.product("csdh".chars).map { |c| c.join }.shuffle
+  session['deck'] = []
+  "AJQKT98765432".chars.each do |rank|
+    "csdh".chars.each do |suit|
+      session['deck'] << rank + suit
+    end
+  end
 
   2.times do
     session['player_cards'] << session['deck'].pop
