@@ -1,12 +1,14 @@
 require 'rubygems'
 require 'sinatra'
 require 'pry'
-# set :sessions, true
-set :bind, '0.0.0.0'
+set :sessions, true
 
-use Rack::Session::Cookie, :key => 'rack.session',
-                           :path => '/',
-                           :secret => 'zhW^$#LEYrmvgabos(H_c{8Fk*V3?K9}27C0=,nD'
+## commented this out after failure
+#set :bind, '0.0.0.0'
+
+# use Rack::Session::Cookie, :key => 'rack.session',
+#                            :path => '/',
+#                            :secret => 'zhW^$#LEYrmvgabos(H_c{8Fk*V3?K9}27C0=,nD'
 
 helpers do
   def run_dealer
