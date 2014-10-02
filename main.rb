@@ -158,7 +158,7 @@ post '/hit' do
     @dealer_show_one = false
     @error = "#{session['player_name']} is busted! You have #{session['player_chips']} remaining."
   end
-  erb :game
+  erb :game, layout: false
 end
 
 post '/stay' do
