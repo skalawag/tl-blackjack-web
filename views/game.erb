@@ -27,17 +27,14 @@
        <% end %>
 
        <% if @show_dealer_button %>
-       <div class="run_dealer">
-	 <p>Dealer's Turn!</p>
-       </div>
-<!--       <form id="dealer_hit" action="/dealer_hit" method="post">
-	 <input type="submit" class="button btn-success" value="Dealer says, 'Hit me!'."/>
-       </form> -->
+      <form id="dealer_hit" action="/dealer_hit" method="post">
+	 <input type="submit" class="btn btn-success" value="Dealer says, 'Hit me!'."/>
+       </form>
        <% end %>
 
        <% if @play_again_button %>
        <form id="play_again" action="/bet" method="post">
-	 <input type="submit" class="button btn-success" value="Play Again?"/>
+	 <input type="submit" class="btn btn-success" value="Play Again?"/>
        </form>
        <% end %>
 

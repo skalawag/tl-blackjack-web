@@ -1,21 +1,18 @@
 $(document).ready(function() {
     $('input[type=text]').focus();
-    $(document).on('click', '#hit_me input', function () {
-	$.ajax({
-	    type: 'POST',
-	    url: '/hit'
-	}).done(function(msg) {
-	    $('#game').replaceWith(msg);
-	});
-	return false;
-    });
-    $(document).on('click', '#stay input', function () {
-	$.ajax({
-	    type: 'POST',
-	    url: '/stay'
-	}).done(function(msg) {
-	    $('#game').replaceWith(msg);
-	});
-	return false;
-    });
+    ajaxify('#hit_me input', '/hit');
+    ajaxify('#stay input', '/stay');
+    ajaxify('#dealer_hit input', '/dealer_hit');
 });
+
+function ajaxify (csstar, whereto) {
+    $(document).on('click', csstar, function () {
+	$.ajax({
+	    type: 'POST',
+	    url: whereto
+	}).done(function(msg) {
+	    $('#game').replaceWith(msg);
+	});
+	return false;
+    });
+};
