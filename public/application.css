@@ -54,8 +54,13 @@ h2 {
     width: 940px;
 }
 
-#hit {
-    position: absolute;
+#replenish {
+    float: left;
+    margin-left: 5px;
+}
+
+#go_home {
+    float: left;
 }
 
 #chips {

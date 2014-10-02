@@ -10,21 +10,31 @@
       </form>
     </div>
 
-    <% if session['player_chips'] < 1 %>
-       <form id="hit" action="/replenish" method="post">
+    <% elsif @show_player_buttons %>
+    <form id="hit_me" action="/hit" method="post">
+      <input type="submit" class="btn btn-success" value="Hit Me!"/>
+    </form>
+
+    <form id="stay" action="/stay" method="post">
+      <input type="submit" class="btn btn-warning" value="Stay!"/>
+    </form>
+
+    <% elsif session['player_chips'] < 1 %>
+       <div>
+       <form id="replenish" action="/replenish" method="post">
 	 <input type="submit" class="btn btn-success" value="Buy 500 More Chips"/>
        </form>
-       <% end %>
 
-       <% elsif @show_player_buttons %>
-       <form id="hit_me" action="/hit" method="post">
-	 <input type="submit" class="btn btn-success" value="Hit Me!"/>
+       <form id="go_home" action="/sayoonara" method="post">
+	 <input type="submit" class="btn btn-warning" value="Go home and pout."/>
        </form>
+       </div>
 
-       <form id="stay" action="/stay" method="post">
-	 <input type="submit" class="btn btn-warning" value="Stay!"/>
+     <% else %>
+       <form id="play_again" action="/bet" method="post">
+	 <input type="submit" class="btn btn-success" value="Play Again?"/>
        </form>
-       <% end %>
+     <% end %>
 
        <% if @show_dealer_button %>
       <form id="dealer_hit" action="/dealer_hit" method="post">
@@ -32,11 +42,7 @@
        </form>
        <% end %>
 
-       <% if @play_again_button %>
-       <form id="play_again" action="/bet" method="post">
-	 <input type="submit" class="btn btn-success" value="Play Again?"/>
-       </form>
-       <% end %>
+
 
        <div id="chips">
 	 Chips: <%= session['player_chips'] %>

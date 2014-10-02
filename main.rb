@@ -140,7 +140,7 @@ get '/game' do
   if blackjack?(session['player_cards'])
     @show_player_buttons = false
     if blackjack_beats_dealer?
-      @success = "Player has Blackjack! The dealer may still tie."
+      @success = "Player has Blackjack, but the dealer may still tie!"
     else
       @success = "Player has Blackjack and has won the hand!"
       @play_again_button = true
@@ -191,13 +191,13 @@ get '/announce' do
     end
     @announce = "The winner is #{winner}! You have #{session['player_chips']} chips remaining."
   end
-  if session['player_chips'] < 1
-    redirect '/sayoonara'
-  else
+  # if session['player_chips'] < 1
+  #   redirect '/sayoonara'
+  # else
   erb :game
-  end
+  #end
 end
 
-get '/sayoonara' do
+post '/sayoonara' do
   erb :sayoonara
 end
