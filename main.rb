@@ -134,7 +134,7 @@ get '/game' do
     session['player_cards'] << session['deck'].pop
     session['dealer_cards'] << session['deck'].pop
   end
-
+  binding.pry
   if blackjack?(session['player_cards'])
     @show_player_buttons = false
     if blackjack_beats_dealer?
@@ -142,6 +142,8 @@ get '/game' do
     else
       @success = "Player has Blackjack and has won the hand!"
       @play_again_button = true
+      session['player_chips'] += session['bet'] * 2
+      session['bet'] = 0
     end
   end
   erb :game
@@ -177,12 +179,6 @@ post '/dealer_hit' do
 end
 
 get '/announce' do
-  if session['player_chips'] < 1
-    @show_replenish = true
-    @play_again_button = false
-  else
-    @play_again_button = true
-  end
   @dealer_show_one = false
   winner = winner?
   if winner == 'Tie'
@@ -191,9 +187,14 @@ get '/announce' do
     @announce = "The hand is a tie."
   else
     if winner == session['player_name']
+      @play_again_button = true
       session['player_chips'] += session['bet'] * 2
       session['bet'] = 0
     else
+      if session['player_chips'] < 1
+        @show_replenish = true
+        @play_again_button = false
+      end
       session['bet'] = 0
     end
     @announce = "The winner is #{winner}! You have #{session['player_chips']} chips remaining."
