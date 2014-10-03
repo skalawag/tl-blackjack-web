@@ -203,11 +203,7 @@ get '/announce' do
     end
     @announce = "The winner is #{winner}! You have #{session['player_chips']} chips remaining."
   end
-  # if session['player_chips'] < 1
-  #   redirect '/sayoonara'
-  # else
   erb :game
-  #end
 end
 
 post '/sayoonara' do
