@@ -95,6 +95,7 @@ end
 before do
   @show_player_buttons = false
   @dealer_show_one = true
+  @show_replenish = false
 end
 
 post '/replenish' do
@@ -103,13 +104,11 @@ post '/replenish' do
 end
 
 get '/bet' do
-  @show_replenish = false
   @show_none = true
   erb :game
 end
 
 post '/bet' do
-  @show_replenish = false
   @show_none = true
   session['bet'] = params['bet'].to_i
   if session['bet'] > session['player_chips'] || session['bet'] < 1
@@ -120,7 +119,6 @@ post '/bet' do
 end
 
 get '/game' do
-  @show_replenish = false
   @show_player_buttons = true
   session['player_cards'] = []
   session['dealer_cards'] = []
@@ -150,7 +148,6 @@ get '/game' do
 end
 
 post '/hit' do
-  @show_replenish = false
   @show_player_buttons = true
   session['player_cards'] << session['deck'].pop
   if eval_hand(session['player_cards']) > 21
@@ -167,14 +164,12 @@ post '/hit' do
 end
 
 post '/stay' do
-  @show_replenish = false
   @show_dealer_button = true
   @dealer_show_one = false
   run_dealer
 end
 
 post '/dealer_hit' do
-  @show_replenish = false
   @dealer_show_one = false
   @show_dealer_button = true
   session['dealer_cards'] << session['deck'].pop
