@@ -109,11 +109,13 @@ post '/replenish' do
 end
 
 get '/bet' do
+  @show_replenish = false
   @show_none = true
   erb :game
 end
 
 post '/bet' do
+  @show_replenish = false
   @show_none = true
   session['bet'] = params['bet'].to_i
   if session['bet'] > session['player_chips'] || session['bet'] < 1
@@ -124,6 +126,7 @@ post '/bet' do
 end
 
 get '/game' do
+  @show_replenish = false
   @show_player_buttons = true
   session['player_cards'] = []
   session['dealer_cards'] = []
@@ -153,10 +156,15 @@ get '/game' do
 end
 
 post '/hit' do
+  @show_replenish = false
   @show_player_buttons = true
   session['player_cards'] << session['deck'].pop
   if eval_hand(session['player_cards']) > 21
-    @play_again_button = true
+    if session['player_chips'] < 1
+      @show_replenish = true
+    else
+      @play_again_button = true
+    end
     @show_player_buttons = false
     @dealer_show_one = false
     @error = "#{session['player_name']} is busted! You have #{session['player_chips']} remaining."
@@ -165,12 +173,14 @@ post '/hit' do
 end
 
 post '/stay' do
+  @show_replenish = false
   @show_dealer_button = true
   @dealer_show_one = false
   run_dealer
 end
 
 post '/dealer_hit' do
+  @show_replenish = false
   @dealer_show_one = false
   @show_dealer_button = true
   session['dealer_cards'] << session['deck'].pop
@@ -178,7 +188,12 @@ post '/dealer_hit' do
 end
 
 get '/announce' do
-  @play_again_button = true
+  if session['player_chips'] < 1
+    @show_replenish = true
+    @play_again_button = false
+  else
+    @play_again_button = true
+  end
   @dealer_show_one = false
   winner = winner?
   if winner == 'Tie'

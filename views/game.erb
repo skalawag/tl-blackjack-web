@@ -19,7 +19,9 @@
       <input type="submit" class="btn btn-warning" value="Stay!"/>
     </form>
 
-    <% elsif session['player_chips'] < 1 %>
+    <!-- this is sometimes catching when it shouldn't. change it to
+         @show_replenish and figure you when you need it. -->
+    <% elsif @show_replenish %>
        <div>
        <form id="replenish" action="/replenish" method="post">
 	 <input type="submit" class="btn btn-success" value="Buy 500 More Chips"/>
