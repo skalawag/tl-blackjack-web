@@ -134,7 +134,7 @@ get '/game' do
     session['player_cards'] << session['deck'].pop
     session['dealer_cards'] << session['deck'].pop
   end
-  binding.pry
+
   if blackjack?(session['player_cards'])
     @show_player_buttons = false
     if blackjack_beats_dealer?
