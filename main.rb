@@ -67,12 +67,6 @@ helpers do
     end
   end
 
-  def player_live?
-    if eval_hand(session['player_hand']) < 22
-      true
-    end
-  end
-
   def blackjack_beats_dealer?
     cards = session['dealer_cards'].map{|c| c[0]}
     if cards.include?('A') && cards.include?('K') ||
